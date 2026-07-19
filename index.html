@@ -3,166 +3,277 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loading... Please Wait</title>
+<title>Quiet Room</title>
 <style>
   :root {
-    --bg: #000000;
-    --accent: #00d4ff;
-    --text-dim: #888888;
-    --border-width: 4px;
+    --bg: #07070a;
+    --bg-vignette: #0d0e14;
+    --figure-dark: #0a0a0d;
+    --figure-mid: #1c1f2b;
+    --figure-rim: #3a3f58;
+    --tear: #a9c6ff;
+    --tear-glow: rgba(169, 198, 255, 0.55);
+    --note: #e8d9a8;
+    --caption: #5b5f6e;
   }
 
   * { box-sizing: border-box; }
 
-  body {
-    background: var(--bg);
-    color: var(--accent);
-    font-family: 'Courier New', Courier, monospace;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+  html, body {
     margin: 0;
-    text-align: center;
+    height: 100%;
+    background: radial-gradient(ellipse at 50% 40%, var(--bg-vignette) 0%, var(--bg) 70%);
+    overflow: hidden;
+    font-family: Georgia, 'Times New Roman', serif;
   }
 
-  /* --- Edge loading bar --- */
-  /* Four bars, one per side, that fill in sequence around the viewport */
-  .edge-loader {
-    position: fixed;
-    top: 0; left: 0;
+  .stage {
+    position: relative;
     width: 100vw;
     height: 100vh;
-    pointer-events: none;
-    z-index: 999;
-    opacity: 0;
-  }
-
-  .edge-loader.active { opacity: 1; }
-
-  .edge-loader span {
-    position: absolute;
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
-  }
-
-  .edge-loader .top {
-    top: 0; left: 0;
-    height: var(--border-width);
-    width: 0%;
-    animation: growRight 0.4s linear forwards;
-  }
-  .edge-loader .right {
-    top: 0; right: 0;
-    width: var(--border-width);
-    height: 0%;
-    animation: growDown 0.4s linear 0.4s forwards;
-  }
-  .edge-loader .bottom {
-    bottom: 0; right: 0;
-    height: var(--border-width);
-    width: 0%;
-    animation: growLeft 0.4s linear 0.8s forwards;
-  }
-  .edge-loader .left {
-    bottom: 0; left: 0;
-    width: var(--border-width);
-    height: 0%;
-    animation: growUp 0.4s linear 1.2s forwards;
-  }
-
-  @keyframes growRight { from { width: 0%; } to { width: 100%; } }
-  @keyframes growDown  { from { height: 0%; } to { height: 100%; } }
-  @keyframes growLeft  { from { width: 0%; } to { width: 100%; } }
-  @keyframes growUp    { from { height: 0%; } to { height: 100%; } }
-
-  /* --- Initial spinner (kept from original) --- */
-  .loader {
-    border: 4px solid #1a1a1a;
-    border-top: 4px solid var(--accent);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin-bottom: 20px;
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  h1 {
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
-
-  p {
-    color: var(--text-dim);
-    font-size: 0.9rem;
-    margin-top: 0;
-    margin-bottom: 2rem;
-  }
-
-  /* --- Link list --- */
-  .links {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    align-items: center;
+    justify-content: center;
   }
 
-  .links a {
-    color: var(--accent);
-    text-decoration: none;
-    border: 1px solid var(--accent);
-    padding: 0.6rem 1.5rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    transition: background 0.2s ease, color 0.2s ease;
+  .figure-wrap {
+    position: relative;
+    cursor: pointer;
+    animation: breathe 6.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 40px rgba(0,0,0,0.6));
   }
 
-  .links a:hover {
-    background: var(--accent);
-    color: #000000;
+  @keyframes breathe {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(3px) scale(0.995); }
+  }
+
+  svg { display: block; }
+
+  .tear {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50% 50% 50% 0;
+    background: radial-gradient(circle at 35% 30%, #d9e8ff, var(--tear) 60%, transparent 100%);
+    box-shadow: 0 0 6px var(--tear-glow), 0 0 12px var(--tear-glow);
+    transform: rotate(45deg);
+    pointer-events: none;
+    animation: fall linear forwards;
+  }
+
+  @keyframes fall {
+    0%   { opacity: 0; transform: rotate(45deg) translateY(0) scale(0.6); }
+    10%  { opacity: 0.9; }
+    85%  { opacity: 0.75; }
+    100% { opacity: 0; transform: rotate(45deg) translateY(150px) scale(0.9); }
+  }
+
+  .note-glyph {
+    position: absolute;
+    font-size: 15px;
+    color: var(--note);
+    text-shadow: 0 0 8px rgba(232, 217, 168, 0.8), 0 0 16px rgba(232, 217, 168, 0.4);
+    pointer-events: none;
+    animation: rise 2.1s ease-out forwards;
+    user-select: none;
+  }
+
+  @keyframes rise {
+    0%   { opacity: 0; transform: translate(0, 0) scale(0.7); }
+    15%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(var(--drift, 10px), -60px) scale(1.15); }
+  }
+
+  .caption {
+    position: absolute;
+    bottom: 9%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--caption);
+    font-style: italic;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    opacity: 0.85;
+    transition: opacity 1.2s ease;
+  }
+
+  .caption.hidden { opacity: 0; }
+
+  .ripple {
+    position: absolute;
+    left: 50%;
+    bottom: 14%;
+    width: 4px;
+    height: 4px;
+    border: 1px solid var(--tear-glow);
+    border-radius: 50%;
+    transform: translate(-50%, 0) scale(0);
+    opacity: 0;
+    pointer-events: none;
+    animation: ripple-out 1.6s ease-out forwards;
+  }
+
+  @keyframes ripple-out {
+    0%   { transform: translate(-50%, 0) scale(0.3); opacity: 0.6; }
+    100% { transform: translate(-50%, 0) scale(9); opacity: 0; }
   }
 </style>
 </head>
 <body>
 
-  <div class="edge-loader" id="edgeLoader">
-    <span class="top"></span>
-    <span class="right"></span>
-    <span class="bottom"></span>
-    <span class="left"></span>
+  <div class="stage">
+    <div class="figure-wrap" id="figure">
+      <svg width="320" height="420" viewBox="0 0 320 420">
+        <defs>
+          <radialGradient id="bodyGrad" cx="45%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#242838"/>
+            <stop offset="55%" stop-color="#14161e"/>
+            <stop offset="100%" stop-color="#08080b"/>
+          </radialGradient>
+          <linearGradient id="rimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#3a3f58" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#3a3f58" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+
+        <!-- hunched seated silhouette: knees drawn up, arms wrapped, head bowed -->
+        <path d="
+          M 160 60
+          C 120 60, 95 95, 95 135
+          C 95 160, 105 175, 100 190
+          C 80 210, 70 250, 72 300
+          C 60 320, 55 360, 60 400
+          L 260 400
+          C 264 355, 250 320, 235 302
+          C 238 250, 225 210, 205 190
+          C 200 175, 210 160, 210 135
+          C 210 95, 200 60, 160 60
+          Z"
+          fill="url(#bodyGrad)" stroke="url(#rimGrad)" stroke-width="1.5"/>
+
+        <!-- bowed head detail -->
+        <ellipse cx="160" cy="108" rx="46" ry="50" fill="url(#bodyGrad)"/>
+
+        <!-- eye area (tear origin marker, invisible but positioned) -->
+        <circle id="eyeL" cx="142" cy="118" r="1" fill="transparent"/>
+        <circle id="eyeR" cx="176" cy="120" r="1" fill="transparent"/>
+      </svg>
+    </div>
+
+    <p class="caption" id="caption">click, and let it fall</p>
   </div>
 
-  <div class="loader"></div>
-  <h1>Loading...</h1>
-  <p>Site optimization in progress for loadinpleasewait.com</p>
+<script>
+(function () {
+  const figure = document.getElementById('figure');
+  const caption = document.getElementById('caption');
+  const stage = document.querySelector('.stage');
+  const figureRect = () => figure.getBoundingClientRect();
 
-  <div class="links">
-    <a href="https://www.youtube.com" data-link>YouTube</a>
-    <a href="https://www.facebook.com" data-link>Facebook</a>
-  </div>
+  let audioCtx = null;
+  let started = false;
 
-  <script>
-    // Play the edge-loading-bar animation whenever a link is clicked,
-    // then navigate once the animation finishes.
-    const edgeLoader = document.getElementById('edgeLoader');
-    document.querySelectorAll('a[data-link]').forEach(function (link) {
-      link.addEventListener('click', function (e) {
-        e.preventDefault();
-        const destination = link.href;
-        edgeLoader.classList.add('active');
-        setTimeout(function () {
-          window.location.href = destination;
-        }, 1700); // matches total animation time (4 sides x 0.4s + stagger)
-      });
+  // A gentle descending minor progression — feels like tears, not random noise
+  const notes = [440.00, 392.00, 349.23, 329.63, 293.66, 261.63, 246.94, 220.00]; // A3..A2 minor-ish
+  let noteIndex = 0;
+
+  function ensureAudio() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  }
+
+  function playPianoNote(freq) {
+    ensureAudio();
+    const now = audioCtx.currentTime;
+
+    // A few detuned/harmonic oscillators + fast attack, long decay ~ piano pluck
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.28, now + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
+    gain.connect(audioCtx.destination);
+
+    const partials = [1, 2, 3.01, 4.2];
+    const partialGains = [1, 0.35, 0.12, 0.05];
+
+    partials.forEach((mult, i) => {
+      const osc = audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq * mult;
+      const pg = audioCtx.createGain();
+      pg.gain.value = partialGains[i];
+      osc.connect(pg);
+      pg.connect(gain);
+      osc.start(now);
+      osc.stop(now + 2.5);
     });
-  </script>
+  }
+
+  function spawnTear(originId) {
+    const eye = document.getElementById(originId);
+    const eyeRect = eye.getBoundingClientRect();
+    const fRect = figureRect();
+
+    const tear = document.createElement('div');
+    tear.className = 'tear';
+    tear.style.left = (eyeRect.left - fRect.left + 154) + 'px';
+    tear.style.top = (eyeRect.top - fRect.top + 74) + 'px';
+    tear.style.animationDuration = (1.5 + Math.random() * 0.4) + 's';
+    figure.appendChild(tear);
+
+    const fallDuration = parseFloat(tear.style.animationDuration) * 1000;
+
+    setTimeout(() => {
+      // note + glyph fire together, as the tear lands
+      const freq = notes[noteIndex % notes.length];
+      noteIndex++;
+      playPianoNote(freq);
+      spawnNoteGlyph(tear);
+      spawnRipple();
+      tear.remove();
+    }, fallDuration - 60);
+  }
+
+  function spawnNoteGlyph(tear) {
+    const glyphs = ['♪', '♫', '♩'];
+    const g = document.createElement('div');
+    g.className = 'note-glyph';
+    g.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+    g.style.left = tear.style.left;
+    g.style.top = tear.style.top;
+    g.style.setProperty('--drift', (Math.random() * 30 - 15) + 'px');
+    figure.appendChild(g);
+    setTimeout(() => g.remove(), 2200);
+  }
+
+  function spawnRipple() {
+    const r = document.createElement('div');
+    r.className = 'ripple';
+    stage.appendChild(r);
+    setTimeout(() => r.remove(), 1700);
+  }
+
+  function cry() {
+    spawnTear('eyeL');
+    setTimeout(() => spawnTear('eyeR'), 350 + Math.random() * 300);
+  }
+
+  figure.addEventListener('click', () => {
+    ensureAudio();
+    if (!started) {
+      started = true;
+      caption.classList.add('hidden');
+      cry();
+      setInterval(cry, 2600 + Math.random() * 1200);
+    } else {
+      cry();
+    }
+  });
+})();
+</script>
 
 </body>
 </html>
