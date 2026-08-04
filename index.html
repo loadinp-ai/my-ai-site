@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>loadinpleasewait.com — Jellyfin</title>
+<title>Loading... Please Wait</title>
 <style>
   :root {
     --bg: #000000;
@@ -11,35 +11,24 @@
     --text-dim: #888888;
     --border-width: 4px;
   }
+
   * { box-sizing: border-box; }
-  html, body {
+
+  body {
     background: var(--bg);
     color: var(--accent);
     font-family: 'Courier New', Courier, monospace;
-    margin: 0;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-  }
-
-  /* --- Loading screen (shown first) --- */
-  #loading-screen {
-    position: fixed;
-    inset: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    height: 100vh;
+    margin: 0;
     text-align: center;
-    background: var(--bg);
-    z-index: 10;
-    transition: opacity 0.5s ease;
-  }
-  #loading-screen.hidden {
-    opacity: 0;
-    pointer-events: none;
   }
 
+  /* --- Edge loading bar --- */
+  /* Four bars, one per side, that fill in sequence around the viewport */
   .edge-loader {
     position: fixed;
     top: 0; left: 0;
@@ -47,12 +36,17 @@
     height: 100vh;
     pointer-events: none;
     z-index: 999;
+    opacity: 0;
   }
+
+  .edge-loader.active { opacity: 1; }
+
   .edge-loader span {
     position: absolute;
     background: var(--accent);
     box-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
   }
+
   .edge-loader .top {
     top: 0; left: 0;
     height: var(--border-width);
@@ -77,11 +71,13 @@
     height: 0%;
     animation: growUp 0.4s linear 1.2s forwards;
   }
+
   @keyframes growRight { from { width: 0%; } to { width: 100%; } }
   @keyframes growDown  { from { height: 0%; } to { height: 100%; } }
   @keyframes growLeft  { from { width: 0%; } to { width: 100%; } }
   @keyframes growUp    { from { height: 0%; } to { height: 100%; } }
 
+  /* --- Initial spinner (kept from original) --- */
   .loader {
     border: 4px solid #1a1a1a;
     border-top: 4px solid var(--accent);
@@ -91,106 +87,38 @@
     animation: spin 1s linear infinite;
     margin-bottom: 20px;
   }
+
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
   h1 {
     letter-spacing: 5px;
     text-transform: uppercase;
     margin-bottom: 0.5rem;
   }
+
   p {
     color: var(--text-dim);
     font-size: 0.9rem;
     margin-top: 0;
     margin-bottom: 2rem;
   }
-
-  /* --- Jellyfin embed --- */
-  #jellyfin-frame {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-    z-index: 1;
-  }
-
-  /* --- Fallback message if the frame fails to load --- */
-  #fallback {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 5;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 2rem;
-  }
-  #fallback.show { display: flex; }
-  #fallback a {
-    color: var(--accent);
-    font-size: 1.1rem;
-    margin-top: 1rem;
-  }
 </style>
 </head>
 <body>
 
-  <!-- Jellyfin embedded via iframe -->
-  <iframe
-    id="jellyfin-frame"
-    src="https://lpw8.duckdns.org/web/#/home.html"
-    allow="autoplay; fullscreen; encrypted-media"
-    allowfullscreen
-    onload="document.getElementById('loading-screen').classList.add('hidden')"
-    onerror="showFallback()">
-  </iframe>
-
-  <!-- Loading screen shown until the iframe reports loaded -->
-  <div id="loading-screen">
-    <div class="edge-loader" id="edgeLoader">
-      <span class="top"></span>
-      <span class="right"></span>
-      <span class="bottom"></span>
-      <span class="left"></span>
-    </div>
-    <div class="loader"></div>
-    <h1>Loading...</h1>
-    <p>Connecting to Jellyfin</p>
+  <div class="edge-loader" id="edgeLoader">
+    <span class="top"></span>
+    <span class="right"></span>
+    <span class="bottom"></span>
+    <span class="left"></span>
   </div>
 
-  <!-- Fallback shown if Jellyfin refuses to load in a frame -->
-  <div id="fallback">
-    <h1>Can't Load Jellyfin Here</h1>
-    <p>Your Jellyfin server may be blocking embedded access.</p>
-    <a href="https://lpw8.duckdns.org/web/#/home.html" target="_blank" rel="noopener">
-      Open Jellyfin in a new tab &rarr;
-    </a>
-  </div>
-
-  <script>
-    // Hide the loading screen once the iframe fires 'load'.
-    // Note: if Jellyfin's X-Frame-Options blocks the embed, the browser
-    // will typically still fire 'load' but show a blank/refused frame,
-    // so we also set a timeout fallback.
-    var loadTimeout = setTimeout(function () {
-      document.getElementById('loading-screen').classList.add('hidden');
-      document.getElementById('fallback').classList.add('show');
-    }, 8000);
-
-    document.getElementById('jellyfin-frame').addEventListener('load', function () {
-      clearTimeout(loadTimeout);
-      document.getElementById('loading-screen').classList.add('hidden');
-    });
-
-    function showFallback() {
-      document.getElementById('loading-screen').classList.add('hidden');
-      document.getElementById('fallback').classList.add('show');
-    }
-  </script>
+  <div class="loader"></div>
+  <h1>Loading...</h1>
+  <p>Site optimization in progress for loadinpleasewait.com</p>
 
 </body>
 </html>
